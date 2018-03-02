@@ -7,10 +7,8 @@ namespace MapGenetaroion.Dungeon
 {
     public enum GenerationState
     {
-        LayoutGenerationInitialization,
-        LayoutGeneration,
-        LayoutConstructingInitialization,
-        LayoutConstructing,
+        Start,
+        Generation,
         Finished
     }
 }

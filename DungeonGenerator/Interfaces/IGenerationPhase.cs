@@ -4,11 +4,12 @@ using UnityEngine;
 
 namespace MapGenetaroion.Dungeon
 {
-    public interface ILayoutConstructor
+    public interface IGenerationPhase
     {
         List<IRoom> RoomList { get; set; }
+        Vector2Int DungeonSize { get; set; }
         bool IsDone { get; }
-
-        IEnumerator BuildLayout();
+        void Initialize();
+        IEnumerator Generate();
     }
 }
