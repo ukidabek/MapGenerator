@@ -8,6 +8,8 @@ namespace MapGenetaroion.Dungeon
 {
     public abstract class BaseDungeonGenerator : MonoBehaviour
     {
+        public static BaseDungeonGenerator Instance { get; private set; }
+
         [SerializeField]
         private GenerationState _state = GenerationState.Finished;
         public GenerationState State { get { return _state; } }
@@ -32,15 +34,29 @@ namespace MapGenetaroion.Dungeon
         public event Action<int> PhaseCompleted = null;
         public event Action GenerationCompleted = null;
 
-        private void Awake()
+        protected virtual void Awake()
         {
-            enabled = false;
+            if(Instance == null)
+            {
+                Instance = this;
+            }
+            else
+            {
+                Destroy(this.gameObject);
+                return;
+            }
+
             InitializeGenerator();
 
             for (int i = 0; i < _generationPhaseList.Count; i++)
             {
                 _generationPhaseList[i].Generator = this;
             }
+        }
+
+        protected virtual void Start()
+        {
+            enabled = false;
         }
 
         private void Update()
@@ -146,11 +162,13 @@ namespace MapGenetaroion.Dungeon
 
         public void PauseGeneration()
         {
+            enabled = false;
             _state = GenerationState.Pause;
         }
 
         public void ResumeGeneration()
         {
+            enabled = true;
             _state = GenerationState.Generation;
             GoToNextPhase();
         }
