@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System;
 
 namespace MapGenetaroion.Dungeon
 {
@@ -17,12 +17,19 @@ namespace MapGenetaroion.Dungeon
         protected List<IGenerationPhase> _generationPhaseList = new List<IGenerationPhase>();
 
         [SerializeField, Space]
-        private Vector2Int _dungeonSize = new Vector2Int();
+        private bool _setSeed = false;
+
+        [SerializeField]
+        private int _seed = 0;
+
+        [SerializeField, Space]
+        protected Vector2Int _dungeonSize = new Vector2Int();
 
         private Coroutine _currentCorutine = null;
 
         public event Action GenerationStarted = null;
         public event Action GenerationCanceled = null;
+        public event Action<int> PhaseCompleted = null;
         public event Action GenerationCompleted = null;
 
         private void Awake()
@@ -36,26 +43,16 @@ namespace MapGenetaroion.Dungeon
             }
         }
 
-        protected abstract void InitializeGenerator();
-
-        protected void InitializePhase()
-        {
-            _generationPhaseList[_phaseIndex].DungeonSize = _dungeonSize;
-            _generationPhaseList[_phaseIndex].Initialize();
-            _currentCorutine = StartCoroutine(_generationPhaseList[_phaseIndex].Generate());
-
-            if(_generationPhaseList[_phaseIndex].Pause)
-            {
-                PauseGeneration();
-            }
-        }
-
         private void Update()
         {
             switch (_state)
             {
                 case GenerationState.Start:
                     _phaseIndex = 0;
+                    if (_setSeed)
+                    {
+                        UnityEngine.Random.InitState(_seed);
+                    }
                     InitializePhase();
                     _state = GenerationState.Generation;
                     break;
@@ -63,18 +60,26 @@ namespace MapGenetaroion.Dungeon
                 case GenerationState.Generation:
                     if (_generationPhaseList[_phaseIndex].IsDone)
                     {
+                        if (PhaseCompleted != null)
+                        {
+                            PhaseCompleted(_phaseIndex);
+                        }
+
                         if ((_generationPhaseList.Count - 1) == _phaseIndex)
                         {
                             _state = GenerationState.Finished;
                         }
                         else
                         {
-                            if (_phaseIndex + 1 < _generationPhaseList.Count)
+                            _generationPhaseList[_phaseIndex + 1].RoomList = _generationPhaseList[_phaseIndex].RoomList;
+                            if (_generationPhaseList[_phaseIndex].Pause)
                             {
-                                _generationPhaseList[_phaseIndex + 1].RoomList = _generationPhaseList[_phaseIndex].RoomList;
+                                PauseGeneration();
                             }
-                            ++_phaseIndex;
-                            InitializePhase();
+                            else
+                            {
+                                GoToNextPhase();
+                            }
                         }
                     }
                     break;
@@ -93,6 +98,23 @@ namespace MapGenetaroion.Dungeon
                 case GenerationState.Pause:
                     break;
             }
+        }
+
+        private void GoToNextPhase()
+        {
+            ++_phaseIndex;
+            InitializePhase();
+        }
+
+        public abstract IRoomInfo GetRoomInfo(Vector2 position);
+
+        protected abstract void InitializeGenerator();
+
+        protected void InitializePhase()
+        {
+            _generationPhaseList[_phaseIndex].DungeonSize = _dungeonSize;
+            _generationPhaseList[_phaseIndex].Initialize();
+            _currentCorutine = StartCoroutine(_generationPhaseList[_phaseIndex].Generate());
         }
 
         public void StartGeneration()
@@ -130,6 +152,7 @@ namespace MapGenetaroion.Dungeon
         public void ResumeGeneration()
         {
             _state = GenerationState.Generation;
+            GoToNextPhase();
         }
     }
 }

@@ -5,11 +5,11 @@ using System.Collections.Generic;
 
 namespace MapGenetaroion.Dungeon
 {
-    public class PauseYeald : CustomYieldInstruction
+    public class PauseYield : CustomYieldInstruction
     {
         private BaseDungeonGenerator _generator = null;
 
-        public PauseYeald(BaseDungeonGenerator generator)
+        public PauseYield(BaseDungeonGenerator generator)
         {
             this._generator = generator;
         }

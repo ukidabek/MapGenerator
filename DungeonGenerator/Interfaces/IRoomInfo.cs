@@ -5,7 +5,5 @@ using System.Collections.Generic;
 
 namespace MapGenetaroion.Dungeon
 {
-    public interface IRoom
-    {
-    }
+    public interface IRoomInfo {}
 }

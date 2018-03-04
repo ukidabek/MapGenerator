@@ -29,38 +29,44 @@ namespace MapGenetaroion.Dungeon
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
+            bool isEnabled = GUI.enabled;
+            enableGUIStack.SetValue(ref isEnabled, Application.isPlaying);
+            GUI.enabled = isEnabled;
+            { 
+                EditorGUILayout.BeginHorizontal();
+                {
+                    if(generator.State == GenerationState.Generation)
+                    { 
+                        if (GUILayout.Button(_stop))
+                        {
+                            generator.CancelGeneration();
+                        }
+                    }
+                    else
+                    {
+                        if(GUILayout.Button(_play))
+                        {
+                            if(generator.State == GenerationState.Pause)
+                                generator.ResumeGeneration();
+                            else
+                                generator.StartGeneration();
+                        }
+                    }
 
-            EditorGUILayout.BeginHorizontal();
-            {
-                if(generator.State == GenerationState.Generation)
-                { 
-                    if (GUILayout.Button(_stop))
+                    isEnabled = GUI.enabled;
+                    enableGUIStack.SetValue(ref isEnabled, generator.State == GenerationState.Generation);
+                    GUI.enabled = isEnabled;
+                    if (GUILayout.Button(_pause))
                     {
                         generator.CancelGeneration();
                     }
+                    enableGUIStack.RevertValue(ref isEnabled);
+                    GUI.enabled = isEnabled;
                 }
-                else
-                {
-                    if(GUILayout.Button(_play))
-                    {
-                        if(generator.State == GenerationState.Pause)
-                            generator.ResumeGeneration();
-                        else
-                            generator.StartGeneration();
-                    }
-                }
-
-                bool isEnabled = GUI.enabled;
-                enableGUIStack.SetValue(ref isEnabled, generator.State == GenerationState.Generation);
-                GUI.enabled = isEnabled;
-                if (GUILayout.Button(_pause))
-                {
-                    generator.CancelGeneration();
-                }
-                enableGUIStack.RevertValue(ref isEnabled);
-                GUI.enabled = isEnabled;
+                EditorGUILayout.EndHorizontal();
             }
-            EditorGUILayout.EndHorizontal();
+            enableGUIStack.RevertValue(ref isEnabled);
+            GUI.enabled = isEnabled;
         }
     }
 }
