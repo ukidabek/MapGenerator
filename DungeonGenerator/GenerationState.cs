@@ -9,6 +9,7 @@ namespace MapGenetaroion.Dungeon
     {
         Start,
         Generation,
+        Pause,
         Finished
     }
 }

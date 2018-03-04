@@ -29,6 +29,11 @@ namespace MapGenetaroion.Dungeon
         {
             enabled = false;
             InitializeGenerator();
+
+            for (int i = 0; i < _generationPhaseList.Count; i++)
+            {
+                _generationPhaseList[i].Generator = this;
+            }
         }
 
         protected abstract void InitializeGenerator();
@@ -38,6 +43,11 @@ namespace MapGenetaroion.Dungeon
             _generationPhaseList[_phaseIndex].DungeonSize = _dungeonSize;
             _generationPhaseList[_phaseIndex].Initialize();
             _currentCorutine = StartCoroutine(_generationPhaseList[_phaseIndex].Generate());
+
+            if(_generationPhaseList[_phaseIndex].Pause)
+            {
+                PauseGeneration();
+            }
         }
 
         private void Update()
@@ -51,15 +61,15 @@ namespace MapGenetaroion.Dungeon
                     break;
 
                 case GenerationState.Generation:
-                    if(_generationPhaseList[_phaseIndex].IsDone)
+                    if (_generationPhaseList[_phaseIndex].IsDone)
                     {
-                        if((_generationPhaseList.Count - 1) == _phaseIndex)
+                        if ((_generationPhaseList.Count - 1) == _phaseIndex)
                         {
                             _state = GenerationState.Finished;
                         }
                         else
                         {
-                            if(_phaseIndex + 1 < _generationPhaseList.Count)
+                            if (_phaseIndex + 1 < _generationPhaseList.Count)
                             {
                                 _generationPhaseList[_phaseIndex + 1].RoomList = _generationPhaseList[_phaseIndex].RoomList;
                             }
@@ -78,6 +88,9 @@ namespace MapGenetaroion.Dungeon
                     {
                         GenerationCompleted();
                     }
+                    break;
+
+                case GenerationState.Pause:
                     break;
             }
         }
@@ -107,6 +120,16 @@ namespace MapGenetaroion.Dungeon
             {
                 GenerationCanceled();
             }
+        }
+
+        public void PauseGeneration()
+        {
+            _state = GenerationState.Pause;
+        }
+
+        public void ResumeGeneration()
+        {
+            _state = GenerationState.Generation;
         }
     }
 }
