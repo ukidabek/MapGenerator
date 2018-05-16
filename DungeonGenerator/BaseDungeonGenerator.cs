@@ -11,18 +11,15 @@ namespace MapGenetaroion.Dungeon
     {
         public static BaseDungeonGenerator Instance { get; private set; }
 
-        [SerializeField]
-        private GenerationState _state = GenerationState.Finished;
+        [SerializeField] private GenerationState _state = GenerationState.Finished;
         public GenerationState State { get { return _state; } }
 
         private int _phaseIndex = 0;
         protected List<IGenerationPhase> _generationPhaseList = new List<IGenerationPhase>();
 
-        [SerializeField, Space]
-        private bool _setSeed = false;
+        [SerializeField, Space] private bool _setSeed = false;
 
-        [SerializeField]
-        private int _seed = 0;
+        [SerializeField] private int _seed = 0;
 
         [SerializeField, Space]
         protected Vector2Int _dungeonSize = new Vector2Int();
@@ -66,8 +63,7 @@ namespace MapGenetaroion.Dungeon
             {
                 case GenerationState.Start:
                     _phaseIndex = 0;
-                    if (_setSeed)
-                        UnityEngine.Random.InitState(_seed);
+                    if (_setSeed) UnityEngine.Random.InitState(_seed);
                     InitializePhase();
                     _state = GenerationState.Generation;
                     break;
