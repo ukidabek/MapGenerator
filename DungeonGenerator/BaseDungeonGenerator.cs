@@ -7,6 +7,8 @@ using System.Collections.Generic;
 
 namespace MapGenetaroion.Dungeon
 {
+    using Object = UnityEngine.Object;
+
     public abstract class BaseDungeonGenerator : MonoBehaviour
     {
         public static BaseDungeonGenerator Instance { get; private set; }
@@ -14,7 +16,8 @@ namespace MapGenetaroion.Dungeon
         [SerializeField] private GenerationState _state = GenerationState.Finished;
         public GenerationState State { get { return _state; } }
 
-        private int _phaseIndex = 0;
+        [SerializeField] private int _phaseIndex = 0;
+        [SerializeField] protected List<Object> _phaseObjectList = new List<Object>();
         protected List<IGenerationPhase> _generationPhaseList = new List<IGenerationPhase>();
 
         [SerializeField, Space] private bool _setSeed = false;
@@ -109,7 +112,17 @@ namespace MapGenetaroion.Dungeon
 
         public abstract IRoomInfo GetRoomInfo(Vector2 position);
 
-        protected abstract void InitializeGenerator();
+        protected virtual void InitializeGenerator()
+        {
+            for (int i = 0; i < _phaseObjectList.Count; i++)
+            {
+                var phaseObject = _phaseObjectList[i];
+                if (phaseObject is IGenerationPhase)
+                    _generationPhaseList.Add(phaseObject as IGenerationPhase);
+                else
+                    Debug.LogErrorFormat("Selected object at index {0} is not a generation phase!", i);
+            }
+        }
 
         protected void InitializePhase()
         {
