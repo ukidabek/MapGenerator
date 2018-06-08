@@ -24,8 +24,7 @@ namespace MapGenetaroion.BaseGenerator
 
         [SerializeField] private int _seed = 0;
 
-        [SerializeField, Space]
-        protected Vector2Int _dungeonSize = new Vector2Int();
+        [SerializeField, Space] protected Vector2Int _dungeonSize = new Vector2Int();
 
         private Coroutine _currentCoroutine = null;
 
@@ -65,8 +64,10 @@ namespace MapGenetaroion.BaseGenerator
             switch (_state)
             {
                 case GenerationState.Start:
+                    Debug.LogFormat("Generation started with seed: {0}", UnityEngine.Random.seed);
                     _phaseIndex = 0;
-                    if (_setSeed) UnityEngine.Random.InitState(_seed);
+                    if (_setSeed)
+                        UnityEngine.Random.InitState(_seed);
                     InitializePhase();
                     _state = GenerationState.Generation;
                     break;
