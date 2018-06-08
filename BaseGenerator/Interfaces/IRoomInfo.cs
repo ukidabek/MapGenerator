@@ -3,7 +3,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace MapGenetaroion.Dungeon
+namespace MapGenetaroion.BaseGenerator
 {
     public interface IRoomInfo {}
 }

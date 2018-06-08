@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MapGenetaroion.Dungeon
+namespace MapGenetaroion.BaseGenerator
 {
     public interface IGenerationPhase
     {

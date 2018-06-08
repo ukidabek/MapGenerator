@@ -5,7 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace MapGenetaroion.Dungeon
+namespace MapGenetaroion.BaseGenerator
 {
     using Object = UnityEngine.Object;
 

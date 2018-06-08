@@ -4,7 +4,7 @@ using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace MapGenetaroion.Dungeon
+namespace MapGenetaroion.BaseGenerator
 {
     [CustomEditor(typeof(BaseDungeonGenerator), true)]
     public class BaseDungeonGeneratorEditor : Editor
