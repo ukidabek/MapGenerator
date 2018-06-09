@@ -9,7 +9,7 @@ namespace MapGenetaroion.DungeonGenerator
 {
     public class DungeonLayoutGenerator : MonoBehaviour, IGenerationPhase
     {
-        public List<IRoomInfo> RoomList { get; set; }
+        //public List<IRoomInfo> RoomList { get; set; }
 
         [SerializeField]
         private bool _isDone = false;
@@ -22,17 +22,13 @@ namespace MapGenetaroion.DungeonGenerator
         private Direction[,] _layoutDirection = null;
         public Direction[,] LayoutDirection { get { return _layoutDirection; } }
 
-        [SerializeField]
-        private int _roomCount = 10;
+        [SerializeField] private int _roomCount = 10;
 
-        [SerializeField]
-        private int _minRoomsInLine = 1;
+        [SerializeField] private int _minRoomsInLine = 1;
 
-        [SerializeField]
-        private int _maxRoomInLine = 3;
+        [SerializeField] private int _maxRoomInLine = 3;
 
-        [SerializeField]
-        private int _roomsToGenerate = 0;
+        [SerializeField] private int _roomsToGenerate = 0;
 
         private Vector2 currentPosition = Vector2.zero;
         private Direction currentDirection;
@@ -153,7 +149,7 @@ namespace MapGenetaroion.DungeonGenerator
                         _layout[(int)currentPosition.x, (int)currentPosition.y] = true;
                         _layoutDirection[(int)currentPosition.x, (int)currentPosition.y] = currentDirection;
 
-                        RoomList.Add(Generator.GetRoomInfo(currentPosition));
+                        (Generator as DungeonGenerator).GetRoomInfo(currentPosition);
 
                         --roomsInLine;
                         --_roomsToGenerate;

@@ -12,7 +12,7 @@ namespace MapGenetaroion.DungeonGenerator
         [SerializeField]
         private List<GameObject> _rooms = new List<GameObject>();
 
-        public List<IRoomInfo> RoomList { get; set; }
+        //public List<IRoomInfo> RoomList { get; set; }
 
         public Vector2Int DungeonSize { get; set; }
 
@@ -24,7 +24,6 @@ namespace MapGenetaroion.DungeonGenerator
         public bool IsDone { get { return _isDone; } }
 
         [SerializeField] private float _roomSize = 25f;
-
 
         public bool Pause { get { return false; } }
 
@@ -50,7 +49,7 @@ namespace MapGenetaroion.DungeonGenerator
             _dungeonRooms.Clear();
 
             DungeonGenerator dungeonGenerator = (Generator as DungeonGenerator);
-
+            List<IRoomInfo> RoomList = dungeonGenerator.RoomList;
             for (int i = 1; i < RoomList.Count; i++)
             {
                 DungeonRoomInfo info = RoomList[i] as DungeonRoomInfo;

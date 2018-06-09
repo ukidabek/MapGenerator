@@ -12,11 +12,10 @@ namespace MapGenetaroion.DungeonGenerator
     {
         public BaseDungeonGenerator Generator { get; set; }
 
-        public List<IRoomInfo> RoomList { get; set; }
+        //public List<IRoomInfo> RoomList { get; set; }
         public Vector2Int DungeonSize { get; set; }
 
-        [SerializeField]
-        private bool _isDone = false;
+        [SerializeField] private bool _isDone = false;
         public bool IsDone { get { return _isDone; } }
 
         public bool Pause { get { return true; } }
@@ -52,15 +51,11 @@ namespace MapGenetaroion.DungeonGenerator
             generator.startPosition = FindStartPosition();
             Direction direction = DirectionHandler.GetDirection();
             DirectionHandler.CheckDirection(ref direction, generator.startPosition, DungeonSize);
-            RoomList.Add(Generator.GetRoomInfo(generator.startPosition));
-
+            generator.GetRoomInfo(generator.startPosition);
 
             generator.StartRoom = Instantiate(_startRoomsList[0]).GetComponent<DungeonRoom>();
-            generator.StartRoom.RoomInfo = RoomList[0] as DungeonRoomInfo;
+            generator.StartRoom.RoomInfo = generator.RoomList[0] as DungeonRoomInfo;
             generator.StartRoom.ApplyPosition(25f);
-
-            //CharacterRegister hellspawnCharacterRegister = BaseCharacterRegister.Instance as CharacterRegister;
-            //hellspawnCharacterRegister.AddSpawnPoint(generator.StartRoom.transform);
 
             yield return new PauseYield(Generator);
 
@@ -69,7 +64,9 @@ namespace MapGenetaroion.DungeonGenerator
 
         public void Initialize()
         {
-            RoomList = new List<IRoomInfo>();
+            DungeonGenerator generator = Generator as DungeonGenerator;
+            generator.RoomList.Clear();
+            generator.RoomList = new List<IRoomInfo>();
 
             _isDone = false;
         }

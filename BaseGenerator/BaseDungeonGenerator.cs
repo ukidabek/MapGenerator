@@ -13,18 +13,12 @@ namespace MapGenetaroion.BaseGenerator
     {
         public static BaseDungeonGenerator Instance { get; private set; }
 
-        [SerializeField] private GenerationState _state = GenerationState.Finished;
+        [SerializeField] protected GenerationState _state = GenerationState.Finished;
         public GenerationState State { get { return _state; } }
 
-        [SerializeField] private int _phaseIndex = 0;
+        [SerializeField] protected int _phaseIndex = 0;
         [SerializeField] protected List<Object> _phaseObjectList = new List<Object>();
         protected List<IGenerationPhase> _generationPhaseList = new List<IGenerationPhase>();
-
-        [SerializeField, Space] private bool _setSeed = false;
-
-        [SerializeField] private int _seed = 0;
-
-        [SerializeField, Space] protected Vector2Int _dungeonSize = new Vector2Int();
 
         private Coroutine _currentCoroutine = null;
 
@@ -64,10 +58,8 @@ namespace MapGenetaroion.BaseGenerator
             switch (_state)
             {
                 case GenerationState.Start:
-                    Debug.LogFormat("Generation started with seed: {0}", UnityEngine.Random.seed);
                     _phaseIndex = 0;
-                    if (_setSeed)
-                        UnityEngine.Random.InitState(_seed);
+
                     InitializePhase();
                     _state = GenerationState.Generation;
                     break;
@@ -83,7 +75,6 @@ namespace MapGenetaroion.BaseGenerator
                         }
                         else
                         {
-                            _generationPhaseList[_phaseIndex + 1].RoomList = _generationPhaseList[_phaseIndex].RoomList;
                             if (_generationPhaseList[_phaseIndex].Pause)
                                 PauseGeneration();
                             else
@@ -105,29 +96,31 @@ namespace MapGenetaroion.BaseGenerator
             }
         }
 
-        private void GoToNextPhase()
+        protected virtual void GoToNextPhase()
         {
             ++_phaseIndex;
             InitializePhase();
         }
-
-        public abstract IRoomInfo GetRoomInfo(Vector2 position);
 
         protected virtual void InitializeGenerator()
         {
             for (int i = 0; i < _phaseObjectList.Count; i++)
             {
                 var phaseObject = _phaseObjectList[i];
-                if (phaseObject is IGenerationPhase)
+                if (ValidatePhase(phaseObject))
                     _generationPhaseList.Add(phaseObject as IGenerationPhase);
                 else
                     Debug.LogErrorFormat("Selected object at index {0} is not a generation phase!", i);
             }
         }
 
-        protected void InitializePhase()
+        private bool ValidatePhase(Object phaseObject)
         {
-            _generationPhaseList[_phaseIndex].DungeonSize = _dungeonSize;
+            return phaseObject is IGenerationPhase;
+        }
+
+        protected virtual void InitializePhase()
+        {
             _generationPhaseList[_phaseIndex].Initialize();
             _currentCoroutine = StartCoroutine(_generationPhaseList[_phaseIndex].Generate());
         }
