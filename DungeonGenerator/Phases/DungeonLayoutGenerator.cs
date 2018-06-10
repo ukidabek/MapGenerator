@@ -4,18 +4,18 @@ using System.Collections;
 using System.Collections.Generic;
 
 using MapGenetaroion.BaseGenerator;
+using System;
 
-namespace MapGenetaroion.DungeonGenerator
+namespace MapGenetaroion.DungeonGenerator.Beta
 {
+    using Random = UnityEngine.Random;
+
     public class DungeonLayoutGenerator : MonoBehaviour, IGenerationPhase
     {
-        //public List<IRoomInfo> RoomList { get; set; }
-
-        [SerializeField]
-        private bool _isDone = false;
+        [SerializeField] private bool _isDone = false;
         public bool IsDone { get { return _isDone; } }
 
-        public Vector2Int DungeonSize { get; set; }
+        private Vector2Int DungeonSize { get; set; }
 
         private bool[,] _layout = null;
         public bool[,] Layout { get { return _layout; } }
@@ -30,6 +30,12 @@ namespace MapGenetaroion.DungeonGenerator
 
         [SerializeField] private int _roomsToGenerate = 0;
 
+        [SerializeField] private bool _generateCorridors = false;
+
+        [SerializeField] private int _minCorridorCount = 3;
+
+        [SerializeField] private int _maxCorridorCount = 6;
+
         private Vector2 currentPosition = Vector2.zero;
         private Direction currentDirection;
 
@@ -39,12 +45,16 @@ namespace MapGenetaroion.DungeonGenerator
         private Vector2 _lastPosition = Vector2.zero;
         public Vector2 LastPosition { get { return _lastPosition; } }
 
+        private int _generatedRooms = 0;
+
         public BaseDungeonGenerator Generator { get; set; }
 
         public bool Pause { get { return false; } }
 
         public void Initialize()
         {
+            var generator = (Generator as DungeonGenerator);
+            DungeonSize = generator.DungeonSize;
             _isDone = false;
             _layout = new bool[DungeonSize.x, DungeonSize.y];
             _layoutDirection = new Direction[DungeonSize.x, DungeonSize.y];
@@ -72,9 +82,9 @@ namespace MapGenetaroion.DungeonGenerator
                     if (x == 0 || y == 0)
                     {
                         if ((int)point.x + y < 0 ||
-                           (int)point.x + y == DungeonSize.y ||
-                           (int)point.y + x < 0 ||
-                           (int)point.y + x == DungeonSize.x)
+                            (int)point.x + y == DungeonSize.y ||
+                            (int)point.y + x < 0 ||
+                            (int)point.y + x == DungeonSize.x)
                         {
                             availableDirections--;
                         }
@@ -146,8 +156,7 @@ namespace MapGenetaroion.DungeonGenerator
                     if (Move(currentDirection, ref currentPosition))
                     {
                         _lastPosition = currentPosition;
-                        _layout[(int)currentPosition.x, (int)currentPosition.y] = true;
-                        _layoutDirection[(int)currentPosition.x, (int)currentPosition.y] = currentDirection;
+                        UpdateLayout(currentPosition, _layoutDirection);
 
                         (Generator as DungeonGenerator).GetRoomInfo(currentPosition);
 
@@ -173,7 +182,69 @@ namespace MapGenetaroion.DungeonGenerator
                 yield return new PauseYield(Generator);
             }
 
+            _generatedRooms = (Generator as DungeonGenerator).RoomList.Count - 2;
+
+            if(_generateCorridors)
+            {
+                int corridorsToGanerate = Random.Range(_minCorridorCount, _maxCorridorCount);
+
+                while (corridorsToGanerate > 0)
+                {
+                    var roomList = (Generator as DungeonGenerator).RoomList;
+                    currentPosition = GetCorridorStart();
+                    currentDirection = DirectionHandler.GetDirection();
+
+                    roomsInLine = GetRoomInLine();
+
+                    List<IRoomInfo> corridor = new List<IRoomInfo>();
+                    corridor.Add((Generator as DungeonGenerator).CreateNewRoomForCorridor(currentPosition));
+                    //UpdateLayout(currentPosition, _layoutDirection);
+
+                    while (roomsInLine > 0)
+                    {
+                        if (Move(currentDirection, ref currentPosition))
+                        {
+                            UpdateLayout(currentPosition, _layoutDirection);
+
+                            corridor.Add((Generator as DungeonGenerator).CreateNewRoomForCorridor(currentPosition));
+                            roomsInLine--;
+                            yield return new PauseYield(Generator);
+                        }
+                        else
+                        {
+                            if (GenerationBlocked(currentPosition))
+                            {
+                                break;
+                            }
+                            else
+                            {
+                                 currentDirection = DirectionHandler.GetDirection();
+                            }
+
+                            yield return new PauseYield(Generator);
+                        }
+
+                    }
+
+                    (Generator as DungeonGenerator).CorridorsList.Add(corridor);
+                    corridorsToGanerate--;
+                }
+            }
+
             _isDone = true;
+        }
+
+        private void UpdateLayout(Vector2 currentPosition, Direction[,] layoutDirection)
+        {
+            _layout[(int)currentPosition.x, (int)currentPosition.y] = true;
+            _layoutDirection[(int)currentPosition.x, (int)currentPosition.y] = currentDirection;
+        }
+
+        private Vector3 GetCorridorStart()
+        {
+            var roomList = (Generator as DungeonGenerator).RoomList;
+            int index = Random.Range(1, _generatedRooms);
+            return (roomList[index] as DungeonRoomInfo).Position;
         }
     }
 }

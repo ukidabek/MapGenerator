@@ -16,6 +16,9 @@ namespace MapGenetaroion.BaseGenerator
         [SerializeField] protected GenerationState _state = GenerationState.Finished;
         public GenerationState State { get { return _state; } }
 
+        [SerializeField] protected List<Object> _InitializationObjectList = new List<Object>();
+        protected List<IGenerationInitalization> _generationInitializationList = new List<IGenerationInitalization>();
+
         [SerializeField] protected int _phaseIndex = 0;
         [SerializeField] protected List<Object> _phaseObjectList = new List<Object>();
         protected List<IGenerationPhase> _generationPhaseList = new List<IGenerationPhase>();
@@ -41,11 +44,6 @@ namespace MapGenetaroion.BaseGenerator
             }
 
             InitializeGenerator();
-
-            for (int i = 0; i < _generationPhaseList.Count; i++)
-            {
-                _generationPhaseList[i].Generator = this;
-            }
         }
 
         protected virtual void Start()
@@ -108,9 +106,18 @@ namespace MapGenetaroion.BaseGenerator
             {
                 var phaseObject = _phaseObjectList[i];
                 if (ValidatePhase(phaseObject))
+                {
                     _generationPhaseList.Add(phaseObject as IGenerationPhase);
+                    _generationPhaseList[_generationPhaseList.Count - 1].Generator = this;
+                }
                 else
                     Debug.LogErrorFormat("Selected object at index {0} is not a generation phase!", i);
+            }
+
+            for (int i = 0; i < _InitializationObjectList.Count; i++)
+            {
+                if (_InitializationObjectList[i] is IGenerationInitalization)
+                    (_InitializationObjectList[i] as IGenerationInitalization).Initialize(this);
             }
         }
 
@@ -139,9 +146,7 @@ namespace MapGenetaroion.BaseGenerator
             enabled = false;
 
             if (_currentCoroutine != null)
-            {
                 StopCoroutine(_currentCoroutine);
-            }
 
             GenerationCanceled.Invoke();
         }

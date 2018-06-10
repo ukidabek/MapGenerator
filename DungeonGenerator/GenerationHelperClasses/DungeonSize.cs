@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MapGenetaroion.DungeonGenerator
+namespace MapGenetaroion.DungeonGenerator.Beta
 {
     [Serializable]
     public class DungeonSize

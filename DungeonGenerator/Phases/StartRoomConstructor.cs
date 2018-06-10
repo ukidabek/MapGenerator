@@ -6,19 +6,20 @@ using System.Collections.Generic;
 
 using MapGenetaroion.BaseGenerator;
 
-namespace MapGenetaroion.DungeonGenerator
+namespace MapGenetaroion.DungeonGenerator.Beta
 {
     public class StartRoomConstructor : MonoBehaviour, IGenerationPhase
     {
         public BaseDungeonGenerator Generator { get; set; }
 
         //public List<IRoomInfo> RoomList { get; set; }
-        public Vector2Int DungeonSize { get; set; }
+        private Vector2Int DungeonSize { get; set; }
 
         [SerializeField] private bool _isDone = false;
         public bool IsDone { get { return _isDone; } }
 
-        public bool Pause { get { return true; } }
+        [SerializeField] private bool _pause = true;
+        public bool Pause { get { return _pause; } }
 
         [SerializeField]
         private List<GameObject> _startRoomsList = new List<GameObject>();
@@ -52,6 +53,7 @@ namespace MapGenetaroion.DungeonGenerator
             Direction direction = DirectionHandler.GetDirection();
             DirectionHandler.CheckDirection(ref direction, generator.startPosition, DungeonSize);
             generator.GetRoomInfo(generator.startPosition);
+            DungeonSize = generator.DungeonSize;
 
             generator.StartRoom = Instantiate(_startRoomsList[0]).GetComponent<DungeonRoom>();
             generator.StartRoom.RoomInfo = generator.RoomList[0] as DungeonRoomInfo;
@@ -64,9 +66,10 @@ namespace MapGenetaroion.DungeonGenerator
 
         public void Initialize()
         {
-            DungeonGenerator generator = Generator as DungeonGenerator;
+            var generator = Generator as DungeonGenerator;
             generator.RoomList.Clear();
             generator.RoomList = new List<IRoomInfo>();
+            DungeonSize = generator.DungeonSize;
 
             _isDone = false;
         }

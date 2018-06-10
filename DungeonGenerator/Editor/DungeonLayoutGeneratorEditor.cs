@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 using MapGenetaroion.DungeonGenerator;
 
-namespace Hellspawn.Dungeon.Generator
+namespace MapGenetaroion.DungeonGenerator.Beta
 {
     [CustomEditor(typeof(DungeonLayoutGenerator))]
     public class DungeonLayoutGeneratorEditor : Editor

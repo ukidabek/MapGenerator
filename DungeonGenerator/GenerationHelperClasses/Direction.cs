@@ -1,4 +1,4 @@
-﻿namespace MapGenetaroion.DungeonGenerator
+﻿namespace MapGenetaroion.DungeonGenerator.Beta
 {
     public enum Direction
     {

@@ -3,7 +3,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace MapGenetaroion.DungeonGenerator
+namespace MapGenetaroion.DungeonGenerator.Beta
 {
     public static class DirectionHandler
     {

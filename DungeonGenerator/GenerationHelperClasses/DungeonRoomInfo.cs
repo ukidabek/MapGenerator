@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 using MapGenetaroion.BaseGenerator;
 
-namespace MapGenetaroion.DungeonGenerator
+namespace MapGenetaroion.DungeonGenerator.Beta
 {
     [Serializable]
     public class DungeonRoomInfo : IRoomInfo
