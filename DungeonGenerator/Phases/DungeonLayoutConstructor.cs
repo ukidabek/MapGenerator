@@ -11,7 +11,6 @@ namespace MapGenetaroion.DungeonGenerator.Beta
     {
         [SerializeField] private List<GameObject> _rooms = new List<GameObject>();
 
-        public BaseDungeonGenerator Generator { get; set; }
 
         [SerializeField] private List<DungeonRoom> _dungeonRooms = new List<DungeonRoom>();
 
@@ -33,17 +32,17 @@ namespace MapGenetaroion.DungeonGenerator.Beta
             return _rooms[index];
         }
 
-        public IEnumerator Generate()
+        public IEnumerator Generate(BaseDungeonGenerator generator)
         {
             for (int i = 0; i < _dungeonRooms.Count; i++)
             {
                 Destroy(_dungeonRooms[i].gameObject);
-                yield return new PauseYield(Generator);
+                yield return new PauseYield(generator);
             }
 
             _dungeonRooms.Clear();
 
-            DungeonGenerator dungeonGenerator = (Generator as DungeonGenerator);
+            DungeonGenerator dungeonGenerator = (generator as DungeonGenerator);
             List<List<IRoomInfo>> dungeon = new List<List<IRoomInfo>>();
             dungeon.Add(dungeonGenerator.RoomList);
             dungeon.AddRange(dungeonGenerator.CorridorsList);
@@ -68,7 +67,7 @@ namespace MapGenetaroion.DungeonGenerator.Beta
                         j > 0 ? RoomList[j - 1] as DungeonRoomInfo : null,
                         j < RoomList.Count - 1 ? RoomList[j + 1] as DungeonRoomInfo : null);
 
-                    yield return new PauseYield(Generator);
+                    yield return new PauseYield(generator);
                 }
 
             }

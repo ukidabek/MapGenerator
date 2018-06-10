@@ -56,9 +56,7 @@ namespace MapGenetaroion.BaseGenerator
             switch (_state)
             {
                 case GenerationState.Start:
-                    _phaseIndex = 0;
-
-                    InitializePhase();
+                    _currentCoroutine = StartCoroutine(_generationPhaseList[_phaseIndex = 0].Generate(this));
                     _state = GenerationState.Generation;
                     break;
 
@@ -76,7 +74,7 @@ namespace MapGenetaroion.BaseGenerator
                             if (_generationPhaseList[_phaseIndex].Pause)
                                 PauseGeneration();
                             else
-                                GoToNextPhase();
+                                _currentCoroutine = StartCoroutine(_generationPhaseList[++_phaseIndex].Generate(this));
                         }
                     }
                     break;
@@ -94,12 +92,6 @@ namespace MapGenetaroion.BaseGenerator
             }
         }
 
-        protected virtual void GoToNextPhase()
-        {
-            ++_phaseIndex;
-            InitializePhase();
-        }
-
         protected virtual void InitializeGenerator()
         {
             for (int i = 0; i < _phaseObjectList.Count; i++)
@@ -108,7 +100,6 @@ namespace MapGenetaroion.BaseGenerator
                 if (ValidatePhase(phaseObject))
                 {
                     _generationPhaseList.Add(phaseObject as IGenerationPhase);
-                    _generationPhaseList[_generationPhaseList.Count - 1].Generator = this;
                 }
                 else
                     Debug.LogErrorFormat("Selected object at index {0} is not a generation phase!", i);
@@ -124,12 +115,6 @@ namespace MapGenetaroion.BaseGenerator
         private bool ValidatePhase(Object phaseObject)
         {
             return phaseObject is IGenerationPhase;
-        }
-
-        protected virtual void InitializePhase()
-        {
-            _generationPhaseList[_phaseIndex].Initialize();
-            _currentCoroutine = StartCoroutine(_generationPhaseList[_phaseIndex].Generate());
         }
 
         public void StartGeneration()
@@ -161,7 +146,7 @@ namespace MapGenetaroion.BaseGenerator
         {
             enabled = true;
             _state = GenerationState.Generation;
-            GoToNextPhase();
+            _currentCoroutine = StartCoroutine(_generationPhaseList[++_phaseIndex].Generate(this));
         }
     }
 

@@ -47,24 +47,10 @@ namespace MapGenetaroion.DungeonGenerator.Beta
 
         private int _generatedRooms = 0;
 
-        public BaseDungeonGenerator Generator { get; set; }
+        //public BaseDungeonGenerator Generator { get; set; }
 
         public bool Pause { get { return false; } }
 
-        public void Initialize()
-        {
-            var generator = (Generator as DungeonGenerator);
-            DungeonSize = generator.DungeonSize;
-            _isDone = false;
-            _layout = new bool[DungeonSize.x, DungeonSize.y];
-            _layoutDirection = new Direction[DungeonSize.x, DungeonSize.y];
-            _roomsToGenerate = _roomCount - 2;
-
-            currentDirection = DirectionHandler.GetDirection();
-
-            currentPosition = _startPosition = (Generator as DungeonGenerator).startPosition;
-            _layout[(int)currentPosition.x, (int)currentPosition.y] = true;
-        }
 
         private int GetRoomInLine()
         {
@@ -142,8 +128,19 @@ namespace MapGenetaroion.DungeonGenerator.Beta
             return false;
         }
 
-        public IEnumerator Generate()
+        public IEnumerator Generate(BaseDungeonGenerator generator)
         {
+            DungeonSize = (generator as DungeonGenerator).DungeonSize;
+            _isDone = false;
+            _layout = new bool[DungeonSize.x, DungeonSize.y];
+            _layoutDirection = new Direction[DungeonSize.x, DungeonSize.y];
+            _roomsToGenerate = _roomCount - 2;
+
+            currentDirection = DirectionHandler.GetDirection();
+
+            currentPosition = _startPosition = (generator as DungeonGenerator).startPosition;
+            _layout[(int)currentPosition.x, (int)currentPosition.y] = true;
+
             int roomsInLine = GetRoomInLine();
 
             while (_roomsToGenerate > 0)
@@ -158,12 +155,12 @@ namespace MapGenetaroion.DungeonGenerator.Beta
                         _lastPosition = currentPosition;
                         UpdateLayout(currentPosition, _layoutDirection);
 
-                        (Generator as DungeonGenerator).GetRoomInfo(currentPosition);
+                        (generator as DungeonGenerator).GetRoomInfo(currentPosition);
 
                         --roomsInLine;
                         --_roomsToGenerate;
 
-                        yield return new PauseYield(Generator);
+                        yield return new PauseYield(generator);
                     }
                     else
                     {
@@ -179,10 +176,10 @@ namespace MapGenetaroion.DungeonGenerator.Beta
                 currentDirection = DirectionHandler.GetDirection();
                 roomsInLine = GetRoomInLine();
 
-                yield return new PauseYield(Generator);
+                yield return new PauseYield(generator);
             }
 
-            _generatedRooms = (Generator as DungeonGenerator).RoomList.Count - 2;
+            _generatedRooms = (generator as DungeonGenerator).RoomList.Count - 2;
 
             if(_generateCorridors)
             {
@@ -190,14 +187,14 @@ namespace MapGenetaroion.DungeonGenerator.Beta
 
                 while (corridorsToGanerate > 0)
                 {
-                    var roomList = (Generator as DungeonGenerator).RoomList;
-                    currentPosition = GetCorridorStart();
+                    var roomList = (generator as DungeonGenerator).RoomList;
+                    currentPosition = GetCorridorStart(generator);
                     currentDirection = DirectionHandler.GetDirection();
 
                     roomsInLine = GetRoomInLine();
 
                     List<IRoomInfo> corridor = new List<IRoomInfo>();
-                    corridor.Add((Generator as DungeonGenerator).CreateNewRoomForCorridor(currentPosition));
+                    corridor.Add((generator as DungeonGenerator).CreateNewRoomForCorridor(currentPosition));
                     //UpdateLayout(currentPosition, _layoutDirection);
 
                     while (roomsInLine > 0)
@@ -206,9 +203,9 @@ namespace MapGenetaroion.DungeonGenerator.Beta
                         {
                             UpdateLayout(currentPosition, _layoutDirection);
 
-                            corridor.Add((Generator as DungeonGenerator).CreateNewRoomForCorridor(currentPosition));
+                            corridor.Add((generator as DungeonGenerator).CreateNewRoomForCorridor(currentPosition));
                             roomsInLine--;
-                            yield return new PauseYield(Generator);
+                            yield return new PauseYield(generator);
                         }
                         else
                         {
@@ -221,12 +218,12 @@ namespace MapGenetaroion.DungeonGenerator.Beta
                                  currentDirection = DirectionHandler.GetDirection();
                             }
 
-                            yield return new PauseYield(Generator);
+                            yield return new PauseYield(generator);
                         }
 
                     }
 
-                    (Generator as DungeonGenerator).CorridorsList.Add(corridor);
+                    (generator as DungeonGenerator).CorridorsList.Add(corridor);
                     corridorsToGanerate--;
                 }
             }
@@ -240,9 +237,9 @@ namespace MapGenetaroion.DungeonGenerator.Beta
             _layoutDirection[(int)currentPosition.x, (int)currentPosition.y] = currentDirection;
         }
 
-        private Vector3 GetCorridorStart()
+        private Vector2 GetCorridorStart(BaseDungeonGenerator generator)
         {
-            var roomList = (Generator as DungeonGenerator).RoomList;
+            var roomList = (generator as DungeonGenerator).RoomList;
             int index = Random.Range(1, _generatedRooms);
             return (roomList[index] as DungeonRoomInfo).Position;
         }
