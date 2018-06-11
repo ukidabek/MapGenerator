@@ -9,9 +9,9 @@ namespace MapGenetaroion.BaseGenerator
 {
     using Object = UnityEngine.Object;
 
-    public abstract class BaseDungeonGenerator : MonoBehaviour
+    public class LevelGenerator : MonoBehaviour
     {
-        public static BaseDungeonGenerator Instance { get; private set; }
+        public static LevelGenerator Instance { get; private set; }
 
         [SerializeField] protected GenerationState _state = GenerationState.Finished;
         public GenerationState State { get { return _state; } }
@@ -19,15 +19,18 @@ namespace MapGenetaroion.BaseGenerator
         [SerializeField] protected List<Object> _InitializationObjectList = new List<Object>();
         protected List<IGenerationInitalization> _generationInitializationList = new List<IGenerationInitalization>();
 
-        [SerializeField] protected int _phaseIndex = 0;
+        [SerializeField, Space] protected int _phaseIndex = 0;
         [SerializeField] protected List<Object> _phaseObjectList = new List<Object>();
         protected List<IGenerationPhase> _generationPhaseList = new List<IGenerationPhase>();
+
+        [SerializeField, Space] protected List<Object> _generationData = new List<Object>();
 
         private Coroutine _currentCoroutine = null;
 
         [Space]
         public UnityEvent GenerationStarted = new UnityEvent();
         public UnityEvent GenerationCanceled = new UnityEvent();
+        public UnityEvent GenerationPoused = new UnityEvent();
         public PhaseCompletedEvent PhaseCompleted = new PhaseCompletedEvent();
         public UnityEvent GenerationCompleted = new UnityEvent();
 
@@ -56,7 +59,13 @@ namespace MapGenetaroion.BaseGenerator
             switch (_state)
             {
                 case GenerationState.Start:
-                    _currentCoroutine = StartCoroutine(_generationPhaseList[_phaseIndex = 0].Generate(this));
+                    if (_generationPhaseList.Count == 0)
+                    {
+                        _state = GenerationState.Finished;
+                        break;
+                    }
+
+                    _currentCoroutine = StartCoroutine(_generationPhaseList[_phaseIndex = 0].Generate(this, _generationData.ToArray()));
                     _state = GenerationState.Generation;
                     break;
 
@@ -74,7 +83,7 @@ namespace MapGenetaroion.BaseGenerator
                             if (_generationPhaseList[_phaseIndex].Pause)
                                 PauseGeneration();
                             else
-                                _currentCoroutine = StartCoroutine(_generationPhaseList[++_phaseIndex].Generate(this));
+                                _currentCoroutine = StartCoroutine(_generationPhaseList[++_phaseIndex].Generate(this, _generationData.ToArray()));
                         }
                     }
                     break;
@@ -108,7 +117,7 @@ namespace MapGenetaroion.BaseGenerator
             for (int i = 0; i < _InitializationObjectList.Count; i++)
             {
                 if (_InitializationObjectList[i] is IGenerationInitalization)
-                    (_InitializationObjectList[i] as IGenerationInitalization).Initialize(this);
+                    (_InitializationObjectList[i] as IGenerationInitalization).Initialize(this, _generationData.ToArray());
             }
         }
 
@@ -140,13 +149,14 @@ namespace MapGenetaroion.BaseGenerator
         {
             enabled = false;
             _state = GenerationState.Pause;
+            GenerationPoused.Invoke();
         }
 
         public void ResumeGeneration()
         {
             enabled = true;
             _state = GenerationState.Generation;
-            _currentCoroutine = StartCoroutine(_generationPhaseList[++_phaseIndex].Generate(this));
+            //_currentCoroutine = StartCoroutine(_generationPhaseList[++_phaseIndex].Generate(this));
         }
     }
 

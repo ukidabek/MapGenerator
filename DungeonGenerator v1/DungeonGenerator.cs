@@ -7,7 +7,7 @@ using MapGenetaroion.BaseGenerator;
 
 namespace MapGenetaroion.DungeonGenerator.Beta
 {
-    public class DungeonGenerator : BaseDungeonGenerator
+    public class DungeonGenerator : LevelGenerator
     {
         [SerializeField, Space] private Vector2Int dungeonSize = new Vector2Int();
 

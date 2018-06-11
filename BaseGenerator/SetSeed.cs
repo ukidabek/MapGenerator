@@ -9,7 +9,7 @@ namespace MapGenetaroion.BaseGenerator
         [SerializeField] private int _seed = 200;
         [SerializeField] private bool _setSeed = false;
         
-        public void Initialize(BaseDungeonGenerator generator)
+        public void Initialize(LevelGenerator generator, params object[] generationData)
         {
             if (!_setSeed)
                 return;

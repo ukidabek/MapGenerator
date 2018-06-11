@@ -2,6 +2,6 @@
 {
     public interface IGenerationInitalization
     {
-        void Initialize(BaseDungeonGenerator generator);
+        void Initialize(LevelGenerator generator, object[] generationData);
     }
 }

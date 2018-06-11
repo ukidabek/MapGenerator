@@ -6,10 +6,10 @@ using System.Collections.Generic;
 
 namespace MapGenetaroion.BaseGenerator
 {
-    [CustomEditor(typeof(BaseDungeonGenerator), true)]
+    [CustomEditor(typeof(LevelGenerator), true)]
     public class BaseDungeonGeneratorEditor : Editor
     {
-        private BaseDungeonGenerator generator = null;
+        private LevelGenerator generator = null;
 
         private Texture _pause = null;
         private Texture _play = null;
@@ -19,7 +19,7 @@ namespace MapGenetaroion.BaseGenerator
 
         private void OnEnable()
         {
-            generator = target as BaseDungeonGenerator;
+            generator = target as LevelGenerator;
 
             _pause = Resources.Load("pause", typeof(Texture)) as Texture;
             _play = Resources.Load("play", typeof(Texture)) as Texture;

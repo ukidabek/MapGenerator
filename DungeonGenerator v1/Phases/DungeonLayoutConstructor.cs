@@ -32,7 +32,7 @@ namespace MapGenetaroion.DungeonGenerator.Beta
             return _rooms[index];
         }
 
-        public IEnumerator Generate(BaseDungeonGenerator generator)
+        public IEnumerator Generate(LevelGenerator generator, params object[] generationData)
         {
             for (int i = 0; i < _dungeonRooms.Count; i++)
             {

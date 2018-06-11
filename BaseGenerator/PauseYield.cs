@@ -7,9 +7,9 @@ namespace MapGenetaroion.BaseGenerator
 {
     public class PauseYield : CustomYieldInstruction
     {
-        private BaseDungeonGenerator _generator = null;
+        private LevelGenerator _generator = null;
 
-        public PauseYield(BaseDungeonGenerator generator)
+        public PauseYield(LevelGenerator generator)
         {
             this._generator = generator;
         }

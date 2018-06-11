@@ -43,7 +43,7 @@ namespace MapGenetaroion.DungeonGenerator.Beta
             return startPositions[UnityEngine.Random.Range(0, startPositions.Count)];
         }
 
-        public IEnumerator Generate(BaseDungeonGenerator generator)
+        public IEnumerator Generate(LevelGenerator generator, params object[] generationData)
         {
             DungeonGenerator dungeonGenerator = generator as DungeonGenerator;
 

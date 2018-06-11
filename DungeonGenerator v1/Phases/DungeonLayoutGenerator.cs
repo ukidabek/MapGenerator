@@ -47,8 +47,6 @@ namespace MapGenetaroion.DungeonGenerator.Beta
 
         private int _generatedRooms = 0;
 
-        //public BaseDungeonGenerator Generator { get; set; }
-
         public bool Pause { get { return false; } }
 
 
@@ -128,7 +126,7 @@ namespace MapGenetaroion.DungeonGenerator.Beta
             return false;
         }
 
-        public IEnumerator Generate(BaseDungeonGenerator generator)
+        public IEnumerator Generate(LevelGenerator generator, params object[] generationData)
         {
             DungeonSize = (generator as DungeonGenerator).DungeonSize;
             _isDone = false;
@@ -237,7 +235,7 @@ namespace MapGenetaroion.DungeonGenerator.Beta
             _layoutDirection[(int)currentPosition.x, (int)currentPosition.y] = currentDirection;
         }
 
-        private Vector2 GetCorridorStart(BaseDungeonGenerator generator)
+        private Vector2 GetCorridorStart(LevelGenerator generator)
         {
             var roomList = (generator as DungeonGenerator).RoomList;
             int index = Random.Range(1, _generatedRooms);
