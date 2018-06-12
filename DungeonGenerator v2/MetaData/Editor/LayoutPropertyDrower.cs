@@ -2,17 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using System.Reflection;
 
 namespace MapGenetaroion.DungeonGenerator.V2
 {
     [CustomPropertyDrawer(typeof(Layout))]
     public class LayoutPropertyDrower : PropertyDrawer
     {
-        Layout layout = null;
+        private Layout layout = null;
+        private FieldInfo fieldInfo = null;
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            layout = property.serializedObject.targetObject.GetType().GetField(property.propertyPath).GetValue(property.serializedObject.targetObject) as Layout;
+            fieldInfo = property.serializedObject.targetObject.GetType().GetField(property.propertyPath);
+            layout = fieldInfo.GetValue(property.serializedObject.targetObject) as Layout;
 
             return (layout.RowsCount + 1) * EditorGUIUtility.singleLineHeight;
         }
@@ -22,8 +25,13 @@ namespace MapGenetaroion.DungeonGenerator.V2
             EditorGUI.BeginProperty(position, label, property);
             {
                 Rect rect = position;
-                Rect labelRect = new Rect(position.position, new Vector2(position.width, EditorGUIUtility.singleLineHeight));
+                Rect labelRect = new Rect(position.position, new Vector2(position.width / 2, EditorGUIUtility.singleLineHeight));
+                Vector2Int size = new Vector2Int(layout.RowsCount, layout.ColumnsCount);
+                Rect sizeRect = new Rect(new Vector2(labelRect.x + (position.width / 2), labelRect.y), new Vector2(position.width / 2, EditorGUIUtility.singleLineHeight));
+
                 GUI.Label(labelRect, "Layout");
+                size = EditorGUI.Vector2IntField(sizeRect, string.Empty, size);
+
                 rect.y += EditorGUIUtility.singleLineHeight;
                 rect.size = new Vector2(EditorGUIUtility.singleLineHeight, EditorGUIUtility.singleLineHeight);
                 for (int i = layout.RowsCount - 1; i >= 0; i--)
@@ -35,6 +43,11 @@ namespace MapGenetaroion.DungeonGenerator.V2
                     }
                     rect.y += EditorGUIUtility.singleLineHeight;
                     rect.x = position.x; ;
+                }
+
+                if(size.x != layout.RowsCount || size.y != layout.ColumnsCount)
+                {
+                    fieldInfo.SetValue(property.serializedObject.targetObject, new Layout(size));
                 }
             }
             EditorGUI.EndProperty();

@@ -22,7 +22,7 @@ namespace MapGenetaroion.DungeonGenerator.V2
         public int ColumnsCount { get; private set; }
         public int RowsCount { get; private set; }
 
-        public Layout(Vector2Int size) : this(size.y, size.x) { }
+        public Layout(Vector2Int size) : this(size.x, size.y) { }
 
         public Layout(int rows, int columns)
         {
