@@ -10,12 +10,12 @@ namespace MapGenetaroion.DungeonGenerator.V2
     public class LayoutPropertyDrower : PropertyDrawer
     {
         private Layout layout = null;
-        private FieldInfo fieldInfo = null;
+        private FieldInfo layoutField = null;
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            fieldInfo = property.serializedObject.targetObject.GetType().GetField(property.propertyPath);
-            layout = fieldInfo.GetValue(property.serializedObject.targetObject) as Layout;
+            layoutField = property.serializedObject.targetObject.GetType().GetField(property.propertyPath);
+            layout = layoutField.GetValue(property.serializedObject.targetObject) as Layout;
 
             return (layout.RowsCount + 1) * EditorGUIUtility.singleLineHeight;
         }
@@ -47,7 +47,7 @@ namespace MapGenetaroion.DungeonGenerator.V2
 
                 if(size.x != layout.RowsCount || size.y != layout.ColumnsCount)
                 {
-                    fieldInfo.SetValue(property.serializedObject.targetObject, new Layout(size));
+                    layoutField.SetValue(property.serializedObject.targetObject, new Layout(size));
                 }
             }
             EditorGUI.EndProperty();
