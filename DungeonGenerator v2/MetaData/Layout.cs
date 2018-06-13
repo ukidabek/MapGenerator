@@ -41,5 +41,11 @@ namespace MapGenetaroion.DungeonGenerator.V2
             get { return Rows[row].Columns[column]; }
             set { Rows[row].Columns[column] = value; }
         }
+
+        public bool this[Vector2Int position]
+        {
+            get { return this[position.x, position.y]; }
+            set { this[position.x, position.y] = value; }
+        }
     }
 }

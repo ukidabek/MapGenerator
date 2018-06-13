@@ -37,9 +37,7 @@ namespace MapGenetaroion.BaseGenerator
         protected virtual void Awake()
         {
             if(Instance == null)
-            {
                 Instance = this;
-            }
             else
             {
                 Destroy(this.gameObject);
@@ -158,9 +156,19 @@ namespace MapGenetaroion.BaseGenerator
             _state = GenerationState.Generation;
             //_currentCoroutine = StartCoroutine(_generationPhaseList[++_phaseIndex].Generate(this));
         }
+
+        public static T GetMetaDataObject<T>(params object[] metaDataObject) where T : class
+        {
+            for (int i = 0; i < metaDataObject.Length; i++)
+            {
+                if(metaDataObject[i] is T)
+                    return metaDataObject[i] as T;
+            }
+
+            return null;
+        }
     }
 
     [Serializable]
     public sealed class PhaseCompletedEvent : UnityEvent<int> {}
-
 }
