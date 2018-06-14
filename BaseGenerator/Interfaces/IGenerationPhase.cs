@@ -6,7 +6,7 @@ namespace MapGenetaroion.BaseGenerator
 {
     public interface IGenerationPhase
     {
-        bool IsDone { get; }
+        bool IsDone { get; set; }
         bool Pause { get; }
         IEnumerator Generate(LevelGenerator generator, object[] generationData);
     }

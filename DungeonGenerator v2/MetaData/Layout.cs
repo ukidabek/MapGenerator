@@ -47,5 +47,12 @@ namespace MapGenetaroion.DungeonGenerator.V2
             get { return this[position.x, position.y]; }
             set { this[position.x, position.y] = value; }
         }
+
+        public bool this[Vector2 position]
+        {
+            get { return this[(int)position.x, (int)position.y]; }
+            set { this[(int)position.x, (int)position.y] = value; }
+        }
+
     }
 }

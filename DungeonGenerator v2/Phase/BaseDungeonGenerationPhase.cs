@@ -8,9 +8,10 @@ namespace MapGenetaroion.DungeonGenerator.V2
     public abstract class BaseDungeonGenerationPhase : MonoBehaviour, IGenerationPhase
     {
         [SerializeField] protected bool _isDone = false;
-        public bool IsDone { get { return _isDone; } }
+        public bool IsDone { get { return _isDone; } set { _isDone = value; } }
 
-        public bool Pause { get { return true; } }
+        [SerializeField] protected bool _pause = false;
+        public bool Pause { get { return _pause; } }
 
         public abstract IEnumerator Generate(LevelGenerator generator, object[] generationData);
     }

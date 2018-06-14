@@ -43,8 +43,6 @@ namespace MapGenetaroion.BaseGenerator
                 Destroy(this.gameObject);
                 return;
             }
-
-            InitializeGenerator();
         }
 
         protected virtual void Start()
@@ -57,14 +55,16 @@ namespace MapGenetaroion.BaseGenerator
             switch (_state)
             {
                 case GenerationState.Start:
+                    InitializeGenerator();
+
                     if (_generationPhaseList.Count == 0)
                     {
                         _state = GenerationState.Finished;
                         break;
                     }
 
-                    _currentCoroutine = StartCoroutine(_generationPhaseList[_phaseIndex = 0].Generate(this, _generationData.ToArray()));
                     _state = GenerationState.Generation;
+                    _currentCoroutine = StartCoroutine(_generationPhaseList[_phaseIndex = 0].Generate(this, _generationData.ToArray()));
                     break;
 
                 case GenerationState.Generation:
@@ -101,12 +101,15 @@ namespace MapGenetaroion.BaseGenerator
 
         protected virtual void InitializeGenerator()
         {
+            _generationPhaseList.Clear();
             for (int i = 0; i < _phaseObjectList.Count; i++)
             {
                 var phaseObject = _phaseObjectList[i];
                 if (ValidatePhase(phaseObject))
                 {
-                    _generationPhaseList.Add(phaseObject as IGenerationPhase);
+                    var phase = phaseObject as IGenerationPhase;
+                    phase.IsDone = false;
+                    _generationPhaseList.Add(phase);
                 }
                 else
                     Debug.LogErrorFormat("Selected object at index {0} is not a generation phase!", i);

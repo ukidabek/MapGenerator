@@ -15,7 +15,7 @@ namespace MapGenetaroion.DungeonGenerator.Beta
         [SerializeField] private List<DungeonRoom> _dungeonRooms = new List<DungeonRoom>();
 
         [SerializeField] private bool _isDone = false;
-        public bool IsDone { get { return _isDone; } }
+        public bool IsDone { get { return _isDone; } set { _isDone = value; } }
 
         [SerializeField] private float _roomSize = 25f;
 

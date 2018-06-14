@@ -14,7 +14,7 @@ namespace MapGenetaroion.DungeonGenerator.Beta
         private Vector2Int DungeonSize { get; set; }
 
         [SerializeField] private bool _isDone = false;
-        public bool IsDone { get { return _isDone; } }
+        public bool IsDone { get { return _isDone; } set { _isDone = value; } }
 
         [SerializeField] private bool _pause = true;
         public bool Pause { get { return _pause; } }

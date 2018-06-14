@@ -27,7 +27,9 @@ namespace MapGenetaroion.DungeonGenerator.V2
                 }
             }
             
-            var startRoomPosition = startPositionsList[Random.Range(0, startPositionsList.Capacity)];
+            var startRoomPosition = startPositionsList[Random.Range(0, startPositionsList.Count - 1)];
+
+            dungeonMetada.StartRoom = new DungeonMetadata.RoomInfo(startRoomPosition);
 
             layout[startRoomPosition] = true;
 

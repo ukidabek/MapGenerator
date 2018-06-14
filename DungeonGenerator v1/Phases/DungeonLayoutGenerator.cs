@@ -13,7 +13,7 @@ namespace MapGenetaroion.DungeonGenerator.Beta
     public class DungeonLayoutGenerator : MonoBehaviour, IGenerationPhase
     {
         [SerializeField] private bool _isDone = false;
-        public bool IsDone { get { return _isDone; } }
+        public bool IsDone { get { return _isDone; } set { _isDone = value; } }
 
         private Vector2Int DungeonSize { get; set; }
 
