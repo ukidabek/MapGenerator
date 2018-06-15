@@ -23,7 +23,7 @@ namespace MapGenetaroion.DungeonGenerator.V2
 
         private Direction GetDirection()
         {
-            return (Direction)Random.Range(0, 3);
+            return (Direction)Random.Range(0, 4);
         }
 
         private int GetRoomCount()
@@ -37,32 +37,46 @@ namespace MapGenetaroion.DungeonGenerator.V2
             settings = LevelGenerator.GetMetaDataObject<GenerationSettings>(generationData);
 
             var layout = dungeonMetada.LayoutData;
+            var currentRoom = dungeonMetada.StartRoom;
 
             Vector2 currentPosition = dungeonMetada.StartRoom.Position;
             Direction direction = GetDirection();
             int roomsInline = GetRoomCount();
+            int roomToGenerate = settings.RoomToGenerate;
+            bool isBloced = false;
 
-            for (int i = 0; i < roomsInline; i++)
+            while(roomToGenerate > 0)
             {
-                if (CheckDirection(direction, currentPosition, layout))
+                for (int i = 0; i < roomsInline; i++)
                 {
-                    currentPosition = Move(direction, currentPosition);
-                    layout[currentPosition] = true;
-                }
-                else
-                {
-                    if (CheckBlock(currentPosition, layout))
-                        break;
+                    if (CheckDirection(direction, currentPosition, layout))
+                    {
+                        currentPosition = Move(direction, currentPosition);
+                        layout[currentPosition] = true;
+                        var newRoom = new DungeonMetadata.RoomInfo(currentPosition);
+                        currentRoom.ConnectedRooms.Add(newRoom);
+                        currentRoom = newRoom;
+                        roomToGenerate--;
+                    }
                     else
                     {
+                        isBloced = CheckBlock(currentPosition, layout);
+                        if (isBloced)
+                            break;
                         i++;
                         direction = GetDirection();
                     }
+
+                    yield return new PauseYield(generator);
                 }
 
+                if (isBloced)
+                    break;
+                direction = GetDirection();
                 yield return new PauseYield(generator);
             }
 
+            currentRoom.Type = DungeonMetadata.RoomInfo.RoomType.End;
             _isDone = true;
         }
 
