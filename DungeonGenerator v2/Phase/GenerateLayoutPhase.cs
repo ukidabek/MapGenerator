@@ -13,7 +13,7 @@ namespace MapGenetaroion.DungeonGenerator.V2
         private DungeonMetadata dungeonMetada;
         private GenerationSettings settings;
 
-        private enum Direction
+        public enum Direction
         {
             Up,
             Right,
@@ -55,6 +55,7 @@ namespace MapGenetaroion.DungeonGenerator.V2
                         layout[currentPosition] = true;
                         var newRoom = new DungeonMetadata.RoomInfo(currentPosition);
                         currentRoom.ConnectedRooms.Add(newRoom);
+                        newRoom.ConnectedRooms.Add(currentRoom);
                         currentRoom = newRoom;
                         roomToGenerate--;
                     }

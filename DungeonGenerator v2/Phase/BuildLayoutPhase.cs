@@ -18,11 +18,12 @@ namespace MapGenetaroion.DungeonGenerator.V2
             dungeonMetada = LevelGenerator.GetMetaDataObject<DungeonMetadata>(generationData);
             settings = LevelGenerator.GetMetaDataObject<GenerationSettings>(generationData);
 
-            List<DungeonMetadata.RoomInfo> roomList = GenerateRoomList(dungeonMetada.StartRoom);
+            List<DungeonMetadata.RoomInfo> roomList = new List<DungeonMetadata.RoomInfo>();
+            GenerateRoomList(dungeonMetada.StartRoom, roomList);
 
             for (int i = 0; i < roomList.Count; i++)
             {
-                BuildRoom(roomList[i],i);
+                BuildRoom(roomList[i],i).SetUpWall(roomList[i]);
                 yield return new PauseYield(generator);
             }
 
@@ -32,7 +33,7 @@ namespace MapGenetaroion.DungeonGenerator.V2
             _isDone = true;
         }
 
-        private void BuildRoom(DungeonMetadata.RoomInfo roomInfo, int index)
+        private RoomSetup BuildRoom(DungeonMetadata.RoomInfo roomInfo, int index)
         {
             GameObject roomPrefab = null;
             switch (roomInfo.Type)
@@ -51,7 +52,10 @@ namespace MapGenetaroion.DungeonGenerator.V2
 
             var position = new Vector3(roomInfo.Position.y * settings.RoomSize.y, 0, roomInfo.Position.x * settings.RoomSize.x);
 
-            GameObject.Instantiate(roomPrefab, position, Quaternion.identity).name = index.ToString();
+            var instance = Instantiate(roomPrefab, position, Quaternion.identity);
+            instance.name = index.ToString();
+
+            return instance.GetComponent<RoomSetup>();
         }
 
         private GameObject RandomizePrefab(List<GameObject> roomPrefabList)
@@ -59,17 +63,18 @@ namespace MapGenetaroion.DungeonGenerator.V2
             return roomPrefabList[Random.Range(0, roomPrefabList.Count)];
         }
 
-        private List<DungeonMetadata.RoomInfo> GenerateRoomList(DungeonMetadata.RoomInfo startRoom)
+        private void GenerateRoomList(DungeonMetadata.RoomInfo startRoom, List<DungeonMetadata.RoomInfo> roomList)
         {
-            List<DungeonMetadata.RoomInfo> roomList = new List<DungeonMetadata.RoomInfo>();
+            //List<DungeonMetadata.RoomInfo> roomList = new List<DungeonMetadata.RoomInfo>();
             roomList.Add(startRoom);
 
             for (int i = 0; i < startRoom.ConnectedRooms.Count; i++)
             {
-                roomList.AddRange(GenerateRoomList(startRoom.ConnectedRooms[i]));
+                if(!roomList.Contains(startRoom.ConnectedRooms[i]))
+                    GenerateRoomList(startRoom.ConnectedRooms[i], roomList);
             }
 
-            return roomList;
+            //return roomList;
         }
     }
 }
