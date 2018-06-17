@@ -10,6 +10,8 @@ namespace MapGenetaroion.DungeonGenerator.V2
     {
         public Layout LayoutData = null;
         public RoomInfo StartRoom = null;
+        public RoomInfo EndRoom = null;
+        public List<RoomInfo> RoomList = new List<RoomInfo>();
 
         public class RoomInfo
         {

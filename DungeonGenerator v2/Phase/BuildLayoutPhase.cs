@@ -18,17 +18,13 @@ namespace MapGenetaroion.DungeonGenerator.V2
             dungeonMetada = LevelGenerator.GetMetaDataObject<DungeonMetadata>(generationData);
             settings = LevelGenerator.GetMetaDataObject<GenerationSettings>(generationData);
 
-            List<DungeonMetadata.RoomInfo> roomList = new List<DungeonMetadata.RoomInfo>();
-            GenerateRoomList(dungeonMetada.StartRoom, roomList);
-
-            for (int i = 0; i < roomList.Count; i++)
+            for (int i = 0; i < dungeonMetada.RoomList.Count; i++)
             {
-                BuildRoom(roomList[i],i).SetUpWall(roomList[i]);
+                BuildRoom(dungeonMetada.RoomList[i],i).SetUpWall(dungeonMetada.RoomList[i]);
                 yield return new PauseYield(generator);
             }
 
             yield return new PauseYield(generator);
-
 
             _isDone = true;
         }
@@ -53,7 +49,7 @@ namespace MapGenetaroion.DungeonGenerator.V2
             var position = new Vector3(roomInfo.Position.y * settings.RoomSize.y, 0, roomInfo.Position.x * settings.RoomSize.x);
 
             var instance = Instantiate(roomPrefab, position, Quaternion.identity);
-            instance.name = index.ToString();
+            instance.name = string.Format("{0} {1}", index.ToString(), roomInfo.Type.ToString());
 
             return instance.GetComponent<RoomSetup>();
         }
@@ -61,20 +57,6 @@ namespace MapGenetaroion.DungeonGenerator.V2
         private GameObject RandomizePrefab(List<GameObject> roomPrefabList)
         {
             return roomPrefabList[Random.Range(0, roomPrefabList.Count)];
-        }
-
-        private void GenerateRoomList(DungeonMetadata.RoomInfo startRoom, List<DungeonMetadata.RoomInfo> roomList)
-        {
-            //List<DungeonMetadata.RoomInfo> roomList = new List<DungeonMetadata.RoomInfo>();
-            roomList.Add(startRoom);
-
-            for (int i = 0; i < startRoom.ConnectedRooms.Count; i++)
-            {
-                if(!roomList.Contains(startRoom.ConnectedRooms[i]))
-                    GenerateRoomList(startRoom.ConnectedRooms[i], roomList);
-            }
-
-            //return roomList;
         }
     }
 }

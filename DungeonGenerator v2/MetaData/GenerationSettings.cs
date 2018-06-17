@@ -21,6 +21,18 @@ namespace MapGenetaroion.DungeonGenerator.V2
         [SerializeField] private int _roomToGenerate = 25;
         public int RoomToGenerate { get { return _roomToGenerate; } }
 
+        [SerializeField] private int _minCorridorsToGenerate = 2;
+        public int MinCorridorsToGenerate { get { return _minCorridorsToGenerate; } }
+
+        [SerializeField] private int _maxCorridorsToGenerate = 4;
+        public int MaxCorridorsToGenerate { get { return _maxCorridorsToGenerate; } }
+
+        [SerializeField] private int _minCorridorsToLenght = 2;
+        public int MinCorridorsToLenght { get { return _minCorridorsToLenght; } }
+
+        [SerializeField] private int _maxCorridorsToLenght = 4;
+        public int MaxCorridorsToLenght { get { return _maxCorridorsToLenght; } }
+
         [SerializeField, Space] List<GameObject> _startRoomGameObject = new List<GameObject>();
         public List<GameObject> StartRoomGameObject { get { return _startRoomGameObject; } }
 
