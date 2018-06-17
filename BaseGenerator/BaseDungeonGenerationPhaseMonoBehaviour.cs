@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MapGenetaroion.DungeonGenerator.V2
+namespace MapGenetaroion.BaseGenerator
 {
-    public abstract class BaseDungeonGenerationPhase : MonoBehaviour, IGenerationPhase
+    public abstract class BaseDungeonGenerationPhaseMonoBehaviour : MonoBehaviour, IGenerationPhase
     {
         [SerializeField] protected bool _isDone = false;
         public bool IsDone { get { return _isDone; } set { _isDone = value; } }

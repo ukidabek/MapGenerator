@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MapGenetaroion.DungeonGenerator.V2
+namespace MapGenetaroion.DungeonGenerator
 {
     public class GenerationSettings : MonoBehaviour
     {

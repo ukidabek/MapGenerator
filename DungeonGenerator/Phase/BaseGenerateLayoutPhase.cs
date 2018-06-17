@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MapGenetaroion.DungeonGenerator.V2
+namespace MapGenetaroion.DungeonGenerator
 {
-    public abstract class BaseGenerateLayoutPhase : BaseDungeonGenerationPhase
+    public abstract class BaseGenerateLayoutPhase : BaseDungeonGenerationPhaseMonoBehaviour
     {
         protected DungeonMetadata dungeonMetada;
         protected GenerationSettings settings;

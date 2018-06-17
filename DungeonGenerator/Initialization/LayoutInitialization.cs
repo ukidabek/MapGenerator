@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MapGenetaroion.DungeonGenerator.V2
+namespace MapGenetaroion.DungeonGenerator
 {
     public class LayoutInitialization : MonoBehaviour, IGenerationInitalization
     {

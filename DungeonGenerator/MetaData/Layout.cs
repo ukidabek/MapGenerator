@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace MapGenetaroion.DungeonGenerator.V2
+namespace MapGenetaroion.DungeonGenerator
 {
     [Serializable]
     public class Layout

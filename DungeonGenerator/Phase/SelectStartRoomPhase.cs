@@ -5,9 +5,9 @@ using System.Collections.Generic;
 
 using MapGenetaroion.BaseGenerator;
 
-namespace MapGenetaroion.DungeonGenerator.V2
+namespace MapGenetaroion.DungeonGenerator
 {
-    public class SelectStartRoomPhase : BaseDungeonGenerationPhase
+    public class SelectStartRoomPhase : BaseDungeonGenerationPhaseMonoBehaviour
     {
         public override IEnumerator Generate(LevelGenerator generator, object[] generationData)
         {

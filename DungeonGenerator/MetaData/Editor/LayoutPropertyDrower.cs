@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using System.Reflection;
 
-namespace MapGenetaroion.DungeonGenerator.V2
+namespace MapGenetaroion.DungeonGenerator
 {
     [CustomPropertyDrawer(typeof(Layout))]
     public class LayoutPropertyDrower : PropertyDrawer

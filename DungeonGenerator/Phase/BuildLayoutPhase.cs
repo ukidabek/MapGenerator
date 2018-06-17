@@ -8,7 +8,7 @@ namespace MapGenetaroion.DungeonGenerator.V2
 {
     using Random = UnityEngine.Random;
 
-    public class BuildLayoutPhase : BaseDungeonGenerationPhase
+    public class BuildLayoutPhase : BaseDungeonGenerationPhaseMonoBehaviour
     {
         private DungeonMetadata dungeonMetada = null;
         private GenerationSettings settings = null;

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using MapGenetaroion.BaseGenerator;
 using UnityEngine;
 
-namespace MapGenetaroion.DungeonGenerator.V2
+namespace MapGenetaroion.DungeonGenerator
 {
     public class GenerateLayoutPhase : BaseGenerateLayoutPhase
     {
