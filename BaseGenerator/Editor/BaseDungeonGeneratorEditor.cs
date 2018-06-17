@@ -58,7 +58,7 @@ namespace MapGenetaroion.BaseGenerator
                     GUI.enabled = isEnabled;
                     if (GUILayout.Button(_pause))
                     {
-                        generator.CancelGeneration();
+                        generator.PauseGeneration();
                     }
                     enableGUIStack.RevertValue(ref isEnabled);
                     GUI.enabled = isEnabled;

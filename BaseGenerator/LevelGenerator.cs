@@ -78,10 +78,11 @@ namespace MapGenetaroion.BaseGenerator
                         }
                         else
                         {
+                            _currentCoroutine = null;
                             if (_generationPhaseList[_phaseIndex].Pause)
                                 PauseGeneration();
                             else
-                                _currentCoroutine = StartCoroutine(_generationPhaseList[++_phaseIndex].Generate(this, _generationData.ToArray()));
+                                StartNextPhase();
                         }
                     }
                     break;
@@ -157,7 +158,14 @@ namespace MapGenetaroion.BaseGenerator
         {
             enabled = true;
             _state = GenerationState.Generation;
-            //_currentCoroutine = StartCoroutine(_generationPhaseList[++_phaseIndex].Generate(this));
+
+            StartNextPhase();
+        }
+
+        private void StartNextPhase()
+        {
+            if (_currentCoroutine == null)
+                _currentCoroutine = StartCoroutine(_generationPhaseList[++_phaseIndex].Generate(this, _generationData.ToArray()));
         }
 
         public static T GetMetaDataObject<T>(params object[] metaDataObject) where T : class
