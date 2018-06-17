@@ -31,6 +31,9 @@ namespace MapGenetaroion.DungeonGenerator.V2
 
         private RoomSetup BuildRoom(DungeonMetadata.RoomInfo roomInfo, int index)
         {
+            if(roomInfo.RoomObject != null)
+                return roomInfo.RoomObject.GetComponent<RoomSetup>();
+
             GameObject roomPrefab = null;
             switch (roomInfo.Type)
             {
@@ -48,10 +51,10 @@ namespace MapGenetaroion.DungeonGenerator.V2
 
             var position = new Vector3(roomInfo.Position.y * settings.RoomSize.y, 0, roomInfo.Position.x * settings.RoomSize.x);
 
-            var instance = Instantiate(roomPrefab, position, Quaternion.identity);
-            instance.name = string.Format("{0} {1}", index.ToString(), roomInfo.Type.ToString());
+            roomInfo.RoomObject = Instantiate(roomPrefab, position, Quaternion.identity);
+            roomInfo.RoomObject.name = string.Format("{0} {1}", index.ToString(), roomInfo.Type.ToString());
 
-            return instance.GetComponent<RoomSetup>();
+            return roomInfo.RoomObject.GetComponent<RoomSetup>();
         }
 
         private GameObject RandomizePrefab(List<GameObject> roomPrefabList)

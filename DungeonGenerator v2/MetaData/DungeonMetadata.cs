@@ -17,6 +17,7 @@ namespace MapGenetaroion.DungeonGenerator.V2
         {
             public Vector2 Position = new Vector2();
             public List<RoomInfo> ConnectedRooms = new List<RoomInfo>();
+            public GameObject RoomObject = null;
 
             public enum RoomType
             {
