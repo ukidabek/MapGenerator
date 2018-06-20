@@ -16,10 +16,12 @@ namespace MapGenetaroion.BaseGenerator
         [SerializeField] protected GenerationState _state = GenerationState.Finished;
         public GenerationState State { get { return _state; } }
 
+
         [SerializeField] protected List<Object> _InitializationObjectList = new List<Object>();
         protected List<IGenerationInitalization> _generationInitializationList = new List<IGenerationInitalization>();
 
-        [SerializeField, Space] protected int _phaseIndex = 0;
+        [SerializeField, Space] private int _phaseIndex = 0;
+        public int PhaseIndex { get { return _phaseIndex; } }
         [SerializeField] protected List<Object> _phaseObjectList = new List<Object>();
         protected List<IGenerationPhase> _generationPhaseList = new List<IGenerationPhase>();
 

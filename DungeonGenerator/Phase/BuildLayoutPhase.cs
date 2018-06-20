@@ -20,7 +20,7 @@ namespace MapGenetaroion.DungeonGenerator.V2
 
             for (int i = 0; i < dungeonMetada.RoomList.Count; i++)
             {
-                BuildRoom(dungeonMetada.RoomList[i],i).SetUpWall(dungeonMetada.RoomList[i]);
+                BuildRoom(dungeonMetada.RoomList[i], i, generator.transform).SetUpWall(dungeonMetada.RoomList[i]);
                 yield return new PauseYield(generator);
             }
 
@@ -29,7 +29,7 @@ namespace MapGenetaroion.DungeonGenerator.V2
             _isDone = true;
         }
 
-        private RoomSetup BuildRoom(DungeonMetadata.RoomInfo roomInfo, int index)
+        private RoomSetup BuildRoom(DungeonMetadata.RoomInfo roomInfo, int index, Transform parent)
         {
             if(roomInfo.RoomObject != null)
                 return roomInfo.RoomObject.GetComponent<RoomSetup>();
@@ -53,6 +53,8 @@ namespace MapGenetaroion.DungeonGenerator.V2
 
             roomInfo.RoomObject = Instantiate(roomPrefab, position, Quaternion.identity);
             roomInfo.RoomObject.name = string.Format("{0} {1}", index.ToString(), roomInfo.Type.ToString());
+
+            roomInfo.RoomObject.transform.SetParent(parent);
 
             return roomInfo.RoomObject.GetComponent<RoomSetup>();
         }
