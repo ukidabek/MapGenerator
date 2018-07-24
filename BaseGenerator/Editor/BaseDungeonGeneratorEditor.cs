@@ -15,7 +15,7 @@ namespace MapGenetaroion.BaseGenerator
         private Texture _play = null;
         private Texture _stop = null;
 
-        private EditorGUIStack<bool> enableGUIStack = new EditorGUIStack<bool>();
+        //private EditorGUIStack<bool> enableGUIStack = new EditorGUIStack<bool>();
 
         private void OnEnable()
         {
@@ -30,7 +30,7 @@ namespace MapGenetaroion.BaseGenerator
         {
             base.OnInspectorGUI();
             bool isEnabled = GUI.enabled;
-            enableGUIStack.SetValue(ref isEnabled, Application.isPlaying);
+            //enableGUIStack.SetValue(ref isEnabled, Application.isPlaying);
             GUI.enabled = isEnabled;
             { 
                 EditorGUILayout.BeginHorizontal();
@@ -54,18 +54,18 @@ namespace MapGenetaroion.BaseGenerator
                     }
 
                     isEnabled = GUI.enabled;
-                    enableGUIStack.SetValue(ref isEnabled, generator.State == GenerationState.Generation);
+                    //enableGUIStack.SetValue(ref isEnabled, generator.State == GenerationState.Generation);
                     GUI.enabled = isEnabled;
                     if (GUILayout.Button(_pause))
                     {
                         generator.PauseGeneration();
                     }
-                    enableGUIStack.RevertValue(ref isEnabled);
+                    //enableGUIStack.RevertValue(ref isEnabled);
                     GUI.enabled = isEnabled;
                 }
                 EditorGUILayout.EndHorizontal();
             }
-            enableGUIStack.RevertValue(ref isEnabled);
+            //enableGUIStack.RevertValue(ref isEnabled);
             GUI.enabled = isEnabled;
         }
     }
