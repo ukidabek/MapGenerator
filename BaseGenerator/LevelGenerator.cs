@@ -45,10 +45,6 @@ namespace MapGenetaroion.BaseGenerator
                 Destroy(this.gameObject);
                 return;
             }
-        }
-
-        protected virtual void Start()
-        {
             enabled = false;
         }
 
